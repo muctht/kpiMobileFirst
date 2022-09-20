@@ -70,7 +70,7 @@ class runLighthouse:
         outStr += "KPI: " + str(kpi)
         return outStr
 
-    def analyseUrlStr(self, site):
+    def analyseUrlStr(self, site: str):
         """ Analyse Url string regarding protocal, containing a slash. """
         proto = "https://"
         if site.startswith("https://"):
@@ -82,7 +82,7 @@ class runLighthouse:
         if slashPosition >= 0: fnName = site[:slashPosition]
         else: fnName = site
         return  proto, site, fnName
-    def analyseSite(self, site):
+    def analyseSite(self, site: str):
         """ Doing the measurement for one site. """
         proto, site, fnName = self.analyseUrlStr(site)
         print("############################### " + site)
