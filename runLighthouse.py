@@ -31,7 +31,6 @@ class lighthouseSiteResult:
         self.desktopMean5 = self.calcMean(self.desktop)
         self.mobileMean5 = self.calcMean(self.mobile)
         self.diff5 = self.desktopMean5 - self.mobileMean5
-        # print('{0:.4f}'.format(self.diff5), "<=", diffParameter, "desktop:", '{0:.4f}'.format(self.desktopMean5), "mobile:", '{0:.4f}'.format(self.mobileMean5), end=' ')
         return self.diff5
 
 class runLighthouse:
@@ -55,7 +54,6 @@ class runLighthouse:
 
     def calcKpi(self):
         """ Calling measurement for each site, calculate the KPI and return output string. """
-        # [print(u) for u in self.urls]
         results = [(self.analyseSite(u), u) for u in self.urls]
         outStr = ""
         for r, u in results:
@@ -66,14 +64,13 @@ class runLighthouse:
                 self.available += 1
                 if r > diffParameter: self.numberNotOk += 1  # using paramater defined in kpi characteristics
                 else: self.numberOk += 1
-        # if self.numberOk + self.numberNotOk != self.available: print("Simple check for availability failed.")
         outStr += "available: " + str(self.available) + ", ok by 5%: " + str(self.numberOk) + ", not ok: " + str(self.numberNotOk) + "<br>"
         if self.available == 0: self.available = 1.0
         kpi = round(self.numberOk / self.available * 100.0)
         outStr += "KPI: " + str(kpi)
         return outStr
 
-    def analyseUrlStr(self, site):
+    def analyseUrlStr(self, site: str):
         """ Analyse Url string regarding protocal, containing a slash. """
         proto = "https://"
         if site.startswith("https://"):
@@ -85,7 +82,7 @@ class runLighthouse:
         if slashPosition >= 0: fnName = site[:slashPosition]
         else: fnName = site
         return  proto, site, fnName
-    def analyseSite(self, site):
+    def analyseSite(self, site: str):
         """ Doing the measurement for one site. """
         proto, site, fnName = self.analyseUrlStr(site)
         print("############################### " + site)
