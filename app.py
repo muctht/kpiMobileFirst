@@ -49,4 +49,4 @@ def uploadUrls():
     return redirect(url_for('outputKpi'))
 
 if __name__ == "__main__":
-    application.run(port = 5000)
+    application.run(host = '0.0.0.0')

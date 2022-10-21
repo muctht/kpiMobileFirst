@@ -1,7 +1,7 @@
 """ Input (of runLighthouse): csv File with a list of Urls """
 
 
-import os
+import subprocess
 import json
 import csv
 from pathlib import Path
@@ -89,15 +89,27 @@ class runLighthouse:
         # measurement instance for site
         sm = lighthouseSiteResult(site)
         # mobile measurement
-        os.system('lighthouse "' + proto + site + '" --chrome-flags="--headless" --output json --output-path json/' + fnName + '-mobile.json --form-factor="mobile"')
-        with open('json/' + fnName + '-mobile.json', 'r') as fnHandle:
-            lighthouseReportDict = json.load(fnHandle)
+        # subprocess.run(['lighthouse "' + proto + site + '" --chrome-flags="--headless --disable-dev-shm-usage --disable-storage-reset" --output json --output-path json/' + fnName + '-mobile.json --form-factor="mobile"'], shell=True)
+        # inside docker:
+        subprocess.run(['lighthouse "' + proto + site + '" --chrome-flags="--headless --disable-dev-shm-usage --disable-storage-reset --no-sandbox" --output json --output-path json/' + fnName + '-mobile.json --form-factor="mobile"'], shell=True)
+        try:
+            with open('json/' + fnName + '-mobile.json', 'r') as fnHandle:
+                lighthouseReportDict = json.load(fnHandle)
+        except:
+            print("json/" + fnName + "-mobile.json has not been written")
+            return -2
         for k in lighthouseReportDict['categories'].keys():
             sm.mobile[k] = lighthouseReportDict['categories'][k]['score']
         # desktop measurement
-        os.system('lighthouse "' + proto + site + '" --chrome-flags="--headless" --output json --output-path json/' + fnName + '-desktop.json --preset="desktop" --form-factor="desktop"')
-        with open('json/' + fnName + '-desktop.json', 'r') as fnHandle:
-            lighthouseReportDict = json.load(fnHandle)
+        # subprocess.run(['lighthouse "' + proto + site + '" --chrome-flags="--headless --disable-dev-shm-usage --disable-storage-reset" --output json --output-path json/' + fnName + '-desktop.json --preset="desktop" --form-factor="desktop"'], shell=True)
+        # inside docker:
+        subprocess.run(['lighthouse "' + proto + site + '" --chrome-flags="--headless --disable-dev-shm-usage --disable-storage-reset --no-sandbox" --output json --output-path json/' + fnName + '-desktop.json --preset="desktop" --form-factor="desktop"'], shell=True)
+        try:
+            with open('json/' + fnName + '-desktop.json', 'r') as fnHandle:
+                lighthouseReportDict = json.load(fnHandle)
+        except:
+            print("json/" + fnName + "-mobile.json has not been written")
+            return -2
         for k in lighthouseReportDict['categories'].keys():
             sm.desktop[k] = lighthouseReportDict['categories'][k]['score']
         # kpi contribution
