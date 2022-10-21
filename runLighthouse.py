@@ -89,9 +89,9 @@ class runLighthouse:
         # measurement instance for site
         sm = lighthouseSiteResult(site)
         # mobile measurement
-        # subprocess.run(['lighthouse "' + proto + site + '" --chrome-flags="--headless --disable-dev-shm-usage --disable-storage-reset" --output json --output-path json/' + fnName + '-mobile.json --form-factor="mobile"'], shell=True)
+        # subprocess.run(['lighthouse "' + proto + site + '" --quiet --chrome-flags="--headless --disable-dev-shm-usage --disable-storage-reset" --output json --output-path json/' + fnName + '-mobile.json --form-factor="mobile"'], shell=True)
         # inside docker:
-        subprocess.run(['lighthouse "' + proto + site + '" --chrome-flags="--headless --disable-dev-shm-usage --disable-storage-reset --no-sandbox" --output json --output-path json/' + fnName + '-mobile.json --form-factor="mobile"'], shell=True)
+        subprocess.run(['lighthouse "' + proto + site + '" --quiet --chrome-flags="--headless --disable-dev-shm-usage --disable-storage-reset --no-sandbox" --output json --output-path json/' + fnName + '-mobile.json --form-factor="mobile"'], shell=True)
         try:
             with open('json/' + fnName + '-mobile.json', 'r') as fnHandle:
                 lighthouseReportDict = json.load(fnHandle)
@@ -101,9 +101,9 @@ class runLighthouse:
         for k in lighthouseReportDict['categories'].keys():
             sm.mobile[k] = lighthouseReportDict['categories'][k]['score']
         # desktop measurement
-        # subprocess.run(['lighthouse "' + proto + site + '" --chrome-flags="--headless --disable-dev-shm-usage --disable-storage-reset" --output json --output-path json/' + fnName + '-desktop.json --preset="desktop" --form-factor="desktop"'], shell=True)
+        # subprocess.run(['lighthouse "' + proto + site + '" --quiet --chrome-flags="--headless --disable-dev-shm-usage --disable-storage-reset" --output json --output-path json/' + fnName + '-desktop.json --preset="desktop" --form-factor="desktop"'], shell=True)
         # inside docker:
-        subprocess.run(['lighthouse "' + proto + site + '" --chrome-flags="--headless --disable-dev-shm-usage --disable-storage-reset --no-sandbox" --output json --output-path json/' + fnName + '-desktop.json --preset="desktop" --form-factor="desktop"'], shell=True)
+        subprocess.run(['lighthouse "' + proto + site + '" --quiet --chrome-flags="--headless --disable-dev-shm-usage --disable-storage-reset --no-sandbox" --output json --output-path json/' + fnName + '-desktop.json --preset="desktop" --form-factor="desktop"'], shell=True)
         try:
             with open('json/' + fnName + '-desktop.json', 'r') as fnHandle:
                 lighthouseReportDict = json.load(fnHandle)
