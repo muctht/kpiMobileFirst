@@ -1,13 +1,18 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-""" Iniput: List of Urls for the measurement """
+""" Wrapper web app (based on Flask) for runLighthouse.py
+    (1) uploading a csv file with URLs
+    (2) running the measurement for all URLs in the csv file
+    (3) displaying the KPI
+    Input: csv file of a list of URLs for the measurement (name; url; ...) """
 
 
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, Markup
 application = Flask(__name__)
 
 import os
 from pathlib import Path
+import concurrent.futures
 
 from runLighthouse import *
 
@@ -16,21 +21,17 @@ from runLighthouse import *
 UPLOAD_FOLDER = 'static/files'
 application.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
-# Small web app (based on Flask) for 
-# (1) uploading a csv file with URLs
-# (2) running the measurement for all URLs in the csv file
-# (3) displaying the KPI
-@application.route("/result")
-def outputKpi():
-    for f in Path(application.config['UPLOAD_FOLDER']).rglob('*.csv'):
-        runl = runLighthouse(f.as_posix())
-        # At the moment only one csv file is relevant
-        return runl.calcKpi()
-    return "Please, upload a csv file."
 
 @application.route("/")
 def index():
     return render_template("index.html")
+
+@application.route("/result")
+def outputKpi():
+    with open('kpi.txt', 'r') as fnHandle:
+        outStr = fnHandle.read()
+        if not outStr: outStr = 'Please, <a href="/upload">upload</a> a csv file.'
+    return render_template("result.html", outStr = Markup(outStr))
 
 @application.route("/upload")
 def upload():
@@ -39,6 +40,9 @@ def upload():
 
 @application.route("/upload", methods=['POST'])
 def uploadUrls():
+    with open('status.txt', 'w') as fnHandle:
+        print("Starting", file=fnHandle)
+    #
     uploaded_file = request.files['file']
     if uploaded_file.filename != '':
         if not Path(application.config['UPLOAD_FOLDER']).exists(): 
@@ -46,7 +50,18 @@ def uploadUrls():
         for csvFn in Path(application.config['UPLOAD_FOLDER']).rglob("*.csv"): csvFn.unlink()
         file_path = os.path.join(application.config['UPLOAD_FOLDER'], uploaded_file.filename)
         uploaded_file.save(file_path)
-    return redirect(url_for('outputKpi'))
+    for f in Path(application.config['UPLOAD_FOLDER']).rglob('*.csv'):
+        urlFile = f.as_posix()
+        runl = runLighthouse(urlFile)
+        # At the moment only one csv file is relevant
+        future_csvFilename = {concurrent.futures.ThreadPoolExecutor(max_workers=1).submit(runl.calcKpi): urlFile}
+    return render_template("working.html")
+
+@application.route("/getStatus")
+def getStatus():
+    with open('status.txt', 'r') as fnHandle:
+        return fnHandle.read()
+    # return session["status"]
 
 if __name__ == "__main__":
     application.run(host = '0.0.0.0')

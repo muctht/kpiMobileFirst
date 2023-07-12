@@ -8,6 +8,15 @@ To determine the KPI, the number of compliant services is recorded and put in re
 
 Measurement method: Google's Lighthouse tool checks web applications for mobile capability. The result is an indicator between 0 and 1, where 1 stands for 100% compliance with the test criteria (e.g. performance, accessibility, SEO capability, best practices, progressive web application). The mean value of the 5 criteria is used here. The desktop version is also tested for comparison.
 
-### Development usage
+Format of urlCsvFile: 
+1. Column: Name of the Site
+2. Column: Url
 
-./wsgi.py
+### Usage as web app
+
+./app.py
+
+http://<host>:5000/ and follow inststurctions.
+
+Note: It is a single user app. The web app is a small wrapper of the cli runLighthouse.py app, which is file based. The purpose of the web app is to run the cli app in a container.
+

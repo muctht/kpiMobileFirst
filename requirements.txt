@@ -1,2 +1,4 @@
 gunicorn
 Flask
+git+https://github.com/richardpenman/builtwith
+requests==2.28.1

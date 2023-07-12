@@ -134,3 +134,14 @@ json/
 static/files/
 .comment.txt
 Dockerfile
+json_202209211008/*
+202209*/*
+202210*/*
+nok/*
+ok/*
+*.csv
+out/*
+.s2i/*
+out.*
+.dockerignore
+status.txt
