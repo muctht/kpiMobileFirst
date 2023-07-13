@@ -1,1 +1,0 @@
-available: 2, ok by 5%: 1, not ok: 1<br>KPI: 50
