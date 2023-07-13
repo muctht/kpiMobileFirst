@@ -144,4 +144,5 @@ out/*
 .s2i/*
 out.*
 .dockerignore
+kpi.txt
 status.txt
